@@ -1,30 +1,37 @@
 package Nim;
 
+import jdk.jshell.spi.ExecutionControl;
+
 import java.text.MessageFormat;
 import java.util.ArrayList;
 
 public class Nim {
 
-    private final ArrayList<Pile> piles = new ArrayList<>();
+    Pile[] piles = new Pile[3];
 
     public Nim(int pileSize){
         for(int i = 0; i < 3; i++){
-            piles.add(new Pile(pileSize));
+            piles[i] = new Pile(pileSize);
         }
     }
 
-    public void removePieces(int number, int targetPile){
-        var pile = piles.get(targetPile);
+    public void removePieces(int number, int targetPile) {
+        //isValidMove(number, targetPile);
+        var pile = piles[targetPile];
         pile.setAmount(number);
     }
 
-    public int getRemainingPileAmount(int pileNo){
-        return piles.get(pileNo).getAmount();
+    private void isValidMove(int number, int targetPile) throws ExecutionControl.NotImplementedException {
+        throw new ExecutionControl.NotImplementedException("Implement");
+    }
+
+    public int getPile(int targetPile){
+        return piles[targetPile].getAmount();
     }
 
     @Override
     public String toString() {
         return MessageFormat.format("Nim'{'Pile 1: {0} | Pile 2: {1} | Pile 3: {2} | '}'",
-                piles.get(0).getAmount(), piles.get(1).getAmount(), piles.get(2).getAmount());
+                piles[0].getAmount(), piles[1].getAmount(), piles[2].getAmount());
     }
 }
