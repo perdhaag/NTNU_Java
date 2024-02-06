@@ -29,8 +29,7 @@ public class Main {
 
         while (!nimGame.isGameOver()) {
 
-            System.out.printf("How many piles do you want to withdraw player %s?", currentPlayer);
-            System.out.println();
+            System.out.printf("How many piles do you want to withdraw player %s%n?", currentPlayer);
             var number = Integer.parseInt(reader.readLine());
 
             try{
