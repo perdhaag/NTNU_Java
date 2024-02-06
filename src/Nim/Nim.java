@@ -32,9 +32,9 @@ public class Nim {
     }
 
     public void removePieces(NimPlayer player, int number) throws IllegalStateException {
-        if (!isValidMove(number, player.getSelectedPile()))
+        if (!isValidMove(number, player.getSelectedPile().getPileIndex()))
             throw new IllegalStateException("The move is not valid! Try again...");
-        var pile = piles[player.getSelectedPile()];
+        var pile = piles[player.getSelectedPile().getPileIndex()];
         pile.removeTiles(number);
         player.incrementPlayerTurn();
     }

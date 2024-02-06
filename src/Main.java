@@ -1,5 +1,6 @@
 import Nim.Nim;
 import Nim.NimPlayer;
+import Nim.Pile;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,16 +19,12 @@ public class Main {
 
         var nim = new Nim(10, playerOne, playerTwo);
 
-        System.out.printf("%s, select your pile. Select between %s, %s and %s%n",
-                nim.getCurrentPlayer().getName(), pileList.get(0), pileList.get(1), pileList.get(2));
-
-        var playerOnePile = Integer.parseInt(reader.readLine());
-        playerOne.selectPile(nim.getPile(playerOnePile - 1));
-        pileList.remove(Integer.valueOf(playerOnePile));
-
-        System.out.printf("%s, select your pile: Select between %s, %s%n", playerTwo.getName(), pileList.get(0), pileList.get(1));
-        var playerTwoPile = Integer.parseInt(reader.readLine());
-        playerTwo.selectPile(nim.getPile(playerTwoPile - 1));
+        while(playerOne.getSelectedPile() == null || playerTwo.getSelectedPile() == null){
+            if(nim.getCurrentPlayer() == playerOne)
+                selectPlayerPile(nim, pileList, reader, playerOne);
+            else
+                selectPlayerPile(nim, pileList, reader, playerTwo);
+        }
 
         while (!nim.isGameOver()) {
             System.out.printf("How many piles do you want to withdraw player %s?%n", nim.getCurrentPlayer().getName());
@@ -46,8 +43,28 @@ public class Main {
         displayWinnerAsciiArt(nim.getCurrentPlayer());
     }
 
+    private static void selectPlayerPile(Nim nim, List<Integer> pileList, BufferedReader reader, NimPlayer currentPlayer) throws IOException {
+        StringBuilder pilesToSelect = new StringBuilder();
+        for (Integer integer : pileList) {
+            pilesToSelect.append(integer).append(", ");
+        }
+
+        System.out.printf("%s, select your pile. Choose from: %s%n", currentPlayer.getName(), pilesToSelect);
+        int selectedPile = Integer.parseInt(reader.readLine());
+
+        if (selectedPile < 1 || selectedPile > pileList.size()) {
+            System.out.println("Invalid pile selection. Please choose a valid pile.");
+            return;
+        }
+
+        currentPlayer.selectPile(nim.getPile(selectedPile - 1));
+        pileList.remove(Integer.valueOf(selectedPile));
+        nim.changeCurrentPlayer();
+    }
+
     private static void displayWinnerAsciiArt(NimPlayer winner) {
-        System.out.printf("Congratulations! Player %s is the winner! You're a Nim master!%n", winner.getName());
+        System.out.printf("Congratulations! Player %s is the winner! You're a Nim master! You used a total of %s turns!%n",
+                winner.getName(), winner.getPerformedTurns());
 
         System.out.println("                                       .                                        ");
         System.out.println("              . .                     -:-             .  .  .                   ");

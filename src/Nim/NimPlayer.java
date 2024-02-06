@@ -1,8 +1,8 @@
 package Nim;
 
 public class NimPlayer {
-    private String name;
-    private int age;
+    private final String name;
+    private final int age;
     private Pile selectedPile;
     private int performedTurns;
 
@@ -17,12 +17,16 @@ public class NimPlayer {
             selectedPile = pile;
     }
 
+    public int getPerformedTurns(){
+        return performedTurns;
+    }
+
     public void incrementPlayerTurn() {
         performedTurns += 1;
     }
 
-    public int getSelectedPile() {
-        return selectedPile.getPileIndex();
+    public Pile getSelectedPile() {
+        return selectedPile;
     }
 
     public String getName() {
