@@ -11,7 +11,7 @@ public class Pile {
         return amount;
     }
 
-    public void setAmount(int amount){
+    public void removeTiles(int amount){
         this.amount -= amount;
     }
 }

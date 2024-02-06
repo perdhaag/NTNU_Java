@@ -1,9 +1,6 @@
 package Nim;
 
-import jdk.jshell.spi.ExecutionControl;
-
-import java.text.MessageFormat;
-import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Nim {
 
@@ -15,15 +12,42 @@ public class Nim {
         }
     }
 
-    public void removePieces(int number, int targetPile) {
-        //isValidMove(number, targetPile);
+    public void removePieces(int number, int targetPile) throws IllegalStateException {
+        if(!isValidMove(number, targetPile))
+            throw new IllegalStateException("The move is not valid! Try again...");
+
         var pile = piles[targetPile];
-        pile.setAmount(number);
+        pile.removeTiles(number);
     }
 
-    private void isValidMove(int number, int targetPile) throws ExecutionControl.NotImplementedException {
-        throw new ExecutionControl.NotImplementedException("Implement");
+    private boolean isValidMove(int number, int targetPile)  {
+        if (targetPile < 0 || targetPile >= piles.length)
+            return false;
+
+        int pilesLeft = piles[targetPile].getAmount();
+        return pilesLeft >= number;
     }
+
+    public boolean isGameOver(){
+        return Arrays.stream(piles).anyMatch(x -> x.getAmount() == 0);
+    }
+
+    public String printGameBoard() {
+        StringBuilder board = new StringBuilder();
+
+        for (int index = 0; index < piles.length; index++) {
+            board.append(index + 1).append(": ");
+
+            for (int i = 0; i < piles[index].getAmount(); i++) {
+                board.append(String.format("[%d]", i));
+            }
+            board.append(System.lineSeparator());
+        }
+        board.append(System.lineSeparator());
+
+        return board.toString();
+    }
+
 
     public int getPile(int targetPile){
         return piles[targetPile].getAmount();
@@ -31,7 +55,6 @@ public class Nim {
 
     @Override
     public String toString() {
-        return MessageFormat.format("Nim'{'Pile 1: {0} | Pile 2: {1} | Pile 3: {2} | '}'",
-                piles[0].getAmount(), piles[1].getAmount(), piles[2].getAmount());
+        return printGameBoard();
     }
 }
