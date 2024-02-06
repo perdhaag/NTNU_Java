@@ -1,3 +1,5 @@
+import Nim.Nim;
+
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
@@ -10,5 +12,15 @@ public class Main {
         account.deposit(5000);
         System.out.println(account.getBalance());
 
+        var nimGame = new Nim(10);
+        nimGame.removePieces(3, 0);
+        nimGame.removePieces(4, 1);
+        nimGame.removePieces(5, 2);
+
+        System.out.println(nimGame.getRemainingPileAmount(0));
+        System.out.println(nimGame.getRemainingPileAmount(1));
+        System.out.println(nimGame.getRemainingPileAmount(2));
+
+        System.out.println(nimGame.toString());
     }
 }
