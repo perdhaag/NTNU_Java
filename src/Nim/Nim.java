@@ -3,24 +3,43 @@ package Nim;
 import java.util.Arrays;
 
 public class Nim {
-
     Pile[] piles = new Pile[3];
+    NimPlayer playerOne;
+    NimPlayer playerTwo;
+    NimPlayer currentPlayer;
 
-    public Nim(int pileSize){
-        for(int i = 0; i < 3; i++){
-            piles[i] = new Pile(pileSize);
+    public Nim(int pileSize) {
+        for (int i = 0; i < 3; i++) {
+            piles[i] = new Pile(pileSize, i);
         }
     }
 
-    public void removePieces(int number, int targetPile) throws IllegalStateException {
-        if(!isValidMove(number, targetPile))
-            throw new IllegalStateException("The move is not valid! Try again...");
-
-        var pile = piles[targetPile];
-        pile.removeTiles(number);
+    public Nim(int pileSize, NimPlayer playerOne, NimPlayer playerTwo) {
+        for (int i = 0; i < 3; i++) {
+            piles[i] = new Pile(i, pileSize);
+        }
+        this.playerOne = playerOne;
+        this.playerTwo = playerTwo;
+        currentPlayer = playerOne;
     }
 
-    private boolean isValidMove(int number, int targetPile)  {
+    public NimPlayer getCurrentPlayer() {
+        return currentPlayer;
+    }
+
+    public void changeCurrentPlayer() {
+        currentPlayer = currentPlayer == playerOne ? playerTwo : playerOne;
+    }
+
+    public void removePieces(NimPlayer player, int number) throws IllegalStateException {
+        if (!isValidMove(number, player.getSelectedPile()))
+            throw new IllegalStateException("The move is not valid! Try again...");
+        var pile = piles[player.getSelectedPile()];
+        pile.removeTiles(number);
+        player.incrementPlayerTurn();
+    }
+
+    public boolean isValidMove(int number, int targetPile) {
         if (targetPile < 0 || targetPile >= piles.length)
             return false;
 
@@ -28,7 +47,7 @@ public class Nim {
         return pilesLeft >= number;
     }
 
-    public boolean isGameOver(){
+    public boolean isGameOver() {
         return Arrays.stream(piles).anyMatch(x -> x.getAmount() == 0);
     }
 
@@ -49,8 +68,8 @@ public class Nim {
     }
 
 
-    public int getPile(int targetPile){
-        return piles[targetPile].getAmount();
+    public Pile getPile(int targetPile) {
+        return piles[targetPile];
     }
 
     @Override

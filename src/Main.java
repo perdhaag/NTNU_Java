@@ -1,4 +1,5 @@
 import Nim.Nim;
+import Nim.NimPlayer;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,59 +13,59 @@ public class Main {
         List<Integer> pileList = new ArrayList<>(Arrays.asList(1, 2, 3));
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
-        var nimGame = new Nim(10);
-        int currentPlayer = 1;
+        var playerOne = new NimPlayer("Erik", 23);
+        var playerTwo = new NimPlayer("Per", 28);
 
-        System.out.printf("Player 1: Select which pile you want to draw from. Select between %s, %s and %s%n", pileList.get(0), pileList.get(1), pileList.get(2));
+        var nim = new Nim(10, playerOne, playerTwo);
+
+        System.out.printf("%s, select your pile. Select between %s, %s and %s%n",
+                nim.getCurrentPlayer().getName(), pileList.get(0), pileList.get(1), pileList.get(2));
+
         var playerOnePile = Integer.parseInt(reader.readLine());
-        System.out.printf("Player 1 selected pile number %s%n", playerOnePile);
-
+        playerOne.selectPile(nim.getPile(playerOnePile - 1));
         pileList.remove(Integer.valueOf(playerOnePile));
 
-        System.out.printf("Player 2: Select which pile you want to draw from. Select between %s, %s%n", pileList.get(0), pileList.get(1));
+        System.out.printf("%s, select your pile: Select between %s, %s%n", playerTwo.getName(), pileList.get(0), pileList.get(1));
         var playerTwoPile = Integer.parseInt(reader.readLine());
-        System.out.printf("Player 2 selected pile number %s%n", playerTwoPile);
+        playerTwo.selectPile(nim.getPile(playerTwoPile - 1));
 
-        System.out.println(nimGame);
+        while (!nim.isGameOver()) {
+            System.out.printf("How many piles do you want to withdraw player %s?%n", nim.getCurrentPlayer().getName());
+            var pilesToDraw = Integer.parseInt(reader.readLine());
 
-        while (!nimGame.isGameOver()) {
-
-            System.out.printf("How many piles do you want to withdraw player %s%n?", currentPlayer);
-            var number = Integer.parseInt(reader.readLine());
-
-            try{
-                nimGame.removePieces(number, currentPlayer == 1 ? playerOnePile - 1 : playerTwoPile - 1); //Take into account 0 index.
+            try {
+                nim.removePieces(nim.getCurrentPlayer(), pilesToDraw);
+                nim.changeCurrentPlayer();
             } catch (IllegalArgumentException e) {
                 System.out.println(e);
                 continue;
             }
-            currentPlayer = (currentPlayer == 1) ? 2 : 1;
-            System.out.println(nimGame);
-        }
 
-        displayWinnerAsciiArt(currentPlayer);
+            System.out.println(nim);
+        }
+        displayWinnerAsciiArt(nim.getCurrentPlayer());
     }
 
-    private static void displayWinnerAsciiArt(int winner) {
-        System.out.printf("Congratulations! Player %d is the winner! You're a Nim master!%n", winner);
+    private static void displayWinnerAsciiArt(NimPlayer winner) {
+        System.out.printf("Congratulations! Player %s is the winner! You're a Nim master!%n", winner.getName());
 
-        System.out.println("                                       .");
-        System.out.println("              . .                     -:-             .  .  .");
-        System.out.println("            .'.:,'.        .  .  .     ' .           . \\ | / .");
-        System.out.println("            .'.;.`.       ._. ! ._.       \\          .__\\:/__.");
-        System.out.println("             `,:.'         ._\\!/_.                     .';`.      . ' .");
-        System.out.println("             ,'             . ! .        ,.,      ..======..       .:.");
-        System.out.println("            ,                 .         ._!_.     ||::: : | .        ',");
-        System.out.println("     .====.,                  .           ;  .~.===: : : :|   ..===.");
-        System.out.println("     |.::'||      .=====.,    ..=======.~,   |\"|: :|::::::|   ||:::|=====|");
-        System.out.println("  ___| :::|!__.,  |:::::|!_,   |: :: ::|\"|l_l|\"|:: |:;;:::|___!| ::|: : :|");
-        System.out.println(" |: :|::: |:: |!__|; :: |: |===::: :: :|\"||_||\"| : |: :: :|: : |:: |:::::|");
-        System.out.println(" |:::| _::|: :|:::|:===:|::|:::|:===F=:|\"!/|\\!\"|::F|:====:|::_:|: :|::__:|");
-        System.out.println(" !_[]![_]_!_[]![]_!_[__]![]![_]![_][I_]!//_:_\\\\![]I![_][_]!_[_]![]_!_[__]!");
-        System.out.println(" -----------------------------------\"---''''```---\"-----------------------");
-        System.out.println(" _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ |= _ _:_ _ =| _ _ _ _ _ _ _ _ _ _ _ _");
-        System.out.println("                                     |=    :    =|                NIM");
-        System.out.println("_____________________________________L___________J________________________");
-        System.out.println("--------------------------------------------------------------------------");
+        System.out.println("                                       .                                        ");
+        System.out.println("              . .                     -:-             .  .  .                   ");
+        System.out.println("            .'.:,'.        .  .  .     ' .           . \\ | / .                 ");
+        System.out.println("            .'.;.`.       ._. ! ._.       \\          .__\\:/__.                ");
+        System.out.println("             `,:.'         ._\\!/_.                     .';`.      . ' .        ");
+        System.out.println("             ,'             . ! .        ,.,      ..======..       .:.          ");
+        System.out.println("            ,                 .         ._!_.     ||::: : | .        ',         ");
+        System.out.println("     .====.,                  .           ;  .~.===: : : :|   ..===.            ");
+        System.out.println("     |.::'||      .=====.,    ..=======.~,   |\"|: :|::::::|   ||:::|=====|     ");
+        System.out.println("  ___| :::|!__.,  |:::::|!_,   |: :: ::|\"|l_l|\"|:: |:;;:::|___!| ::|: : :|    ");
+        System.out.println(" |: :|::: |:: |!__|; :: |: |===::: :: :|\"||_||\"| : |: :: :|: : |:: |:::::|    ");
+        System.out.println(" |:::| _::|: :|:::|:===:|::|:::|:===F=:|\"!/|\\!\"|::F|:====:|::_:|: :|::__:|   ");
+        System.out.println(" !_[]![_]_!_[]![]_!_[__]![]![_]![_][I_]!//_:_\\\\![]I![_][_]!_[_]![]_!_[__]!    ");
+        System.out.println(" -----------------------------------\"---''''```---\"-----------------------    ");
+        System.out.println(" _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ |= _ _:_ _ =| _ _ _ _ _ _ _ _ _ _ _ _      ");
+        System.out.println("                                     |=    :    =|                NIM           ");
+        System.out.println("_____________________________________L___________J________________________      ");
+        System.out.println("--------------------------------------------------------------------------      ");
     }
 }

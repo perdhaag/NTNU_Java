@@ -5,7 +5,7 @@ public class Account {
     public Account(double balance, double interestRate) throws IllegalArgumentException {
 
         //Validate positive values for initialAmount and Interest.
-        if(balance < 0 || interestRate < 0){
+        if (balance < 0 || interestRate < 0) {
             throw new IllegalArgumentException("Both initialamount and interest have positive values");
         }
 
@@ -17,7 +17,7 @@ public class Account {
         return balance;
     }
 
-    public double getInterestRate(){
+    public double getInterestRate() {
         return interestRate;
     }
 
@@ -25,25 +25,25 @@ public class Account {
         this.interestRate = interestRate;
     }
 
-    public void deposit(double amount) throws IllegalArgumentException{
-        if(amount < 0){
+    public void deposit(double amount) throws IllegalArgumentException {
+        if (amount < 0) {
             throw new IllegalArgumentException("Amount must be larger than 0");
         }
         balance += amount;
     }
 
-    public void withdraw(double amount) throws IllegalArgumentException{
-        if (amount < 0){
+    public void withdraw(double amount) throws IllegalArgumentException {
+        if (amount < 0) {
             throw new IllegalArgumentException("Amount must be larger than 0");
         }
-        if(balance - amount < 0){
+        if (balance - amount < 0) {
             throw new IllegalArgumentException("Amount cannot be larger than balance");
         }
 
         balance -= amount;
     }
 
-    public void addInterest(){
+    public void addInterest() {
         balance = balance * interestRate;
     }
 }
