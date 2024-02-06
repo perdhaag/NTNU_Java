@@ -1,6 +1,5 @@
 import Nim.Nim;
 import Nim.NimPlayer;
-import Nim.Pile;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,10 +16,12 @@ public class Main {
         var playerOne = new NimPlayer("Erik", 23);
         var playerTwo = new NimPlayer("Per", 28);
 
-        var nim = new Nim(10, playerOne, playerTwo);
+        var nim = new Nim(9, playerOne, playerTwo);
 
-        while(playerOne.getSelectedPile() == null || playerTwo.getSelectedPile() == null){
-            if(nim.getCurrentPlayer() == playerOne)
+        System.out.println(nim);
+
+        while (playerOne.getSelectedPile() == null || playerTwo.getSelectedPile() == null) {
+            if (nim.getCurrentPlayer() == playerOne)
                 selectPlayerPile(nim, pileList, reader, playerOne);
             else
                 selectPlayerPile(nim, pileList, reader, playerTwo);
@@ -28,16 +29,14 @@ public class Main {
 
         while (!nim.isGameOver()) {
             System.out.printf("How many piles do you want to withdraw player %s?%n", nim.getCurrentPlayer().getName());
-            var pilesToDraw = Integer.parseInt(reader.readLine());
-
             try {
+                var pilesToDraw = Integer.parseInt(reader.readLine());
                 nim.removePieces(nim.getCurrentPlayer(), pilesToDraw);
                 nim.changeCurrentPlayer();
-            } catch (IllegalArgumentException e) {
+            } catch (Exception e) {
                 System.out.println(e);
                 continue;
             }
-
             System.out.println(nim);
         }
         displayWinnerAsciiArt(nim.getCurrentPlayer());
@@ -50,16 +49,23 @@ public class Main {
         }
 
         System.out.printf("%s, select your pile. Choose from: %s%n", currentPlayer.getName(), pilesToSelect);
-        int selectedPile = Integer.parseInt(reader.readLine());
 
-        if (selectedPile < 1 || selectedPile > pileList.size()) {
-            System.out.println("Invalid pile selection. Please choose a valid pile.");
-            return;
+        try {
+            int selectedPile = Integer.parseInt(reader.readLine());
+
+            if (pileList.stream().noneMatch(x -> x == selectedPile)) {
+                System.out.println("Invalid pile selection. Please choose a valid pile.");
+                return;
+            }
+
+            currentPlayer.selectPile(nim.getPile(selectedPile - 1));
+            pileList.remove(Integer.valueOf(selectedPile));
+            nim.changeCurrentPlayer();
+        }
+        catch (NumberFormatException e) {
+            System.out.println(e);
         }
 
-        currentPlayer.selectPile(nim.getPile(selectedPile - 1));
-        pileList.remove(Integer.valueOf(selectedPile));
-        nim.changeCurrentPlayer();
     }
 
     private static void displayWinnerAsciiArt(NimPlayer winner) {

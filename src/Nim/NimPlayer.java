@@ -17,7 +17,7 @@ public class NimPlayer {
             selectedPile = pile;
     }
 
-    public int getPerformedTurns(){
+    public int getPerformedTurns() {
         return performedTurns;
     }
 

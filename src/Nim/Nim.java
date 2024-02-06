@@ -54,11 +54,22 @@ public class Nim {
     public String printGameBoard() {
         StringBuilder board = new StringBuilder();
 
-        for (int index = 0; index < piles.length; index++) {
-            board.append(index + 1).append(": ");
+        int maxPileSize = 0;
 
-            for (int i = 0; i < piles[index].getAmount(); i++) {
-                board.append(String.format("[%d]", i));
+        // Find the maximum size of piles to determine the number of rows needed
+        for (Pile pile : piles) {
+            maxPileSize = Math.max(maxPileSize, pile.getAmount());
+        }
+
+        // Iterate vertically in reverse order
+        for (int i = maxPileSize - 1; i >= 0; i--) {
+            for (Pile pile : piles) {
+                if (i < pile.getAmount()) {
+                    board.append(String.format("[ %2d  ]", i + 1));
+                } else {
+                    board.append(String.format("[ %2s  ]", ""));
+                }
+                board.append(" ");
             }
             board.append(System.lineSeparator());
         }
@@ -66,7 +77,6 @@ public class Nim {
 
         return board.toString();
     }
-
 
     public Pile getPile(int targetPile) {
         return piles[targetPile];
